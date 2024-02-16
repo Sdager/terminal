@@ -1,101 +1,156 @@
-  <template >
+<template >
   <div class="main">
+    <h1>Расписание <br>
+      Производственной практики {{ page+1 }}/{{ pagesCount }}</h1>
+    <div class="all" style="color: black;">
+      <div class="card" v-for="(item, index) in displayFlex" :key="index">
 
-  <h1>Расписание <br>
-  Производственной практики</h1>
-  <div class="all" style="color: red;" @click="practice()">
-
-  <div class="card" v-for="(item, index) in displayFlex" :key="index">
-    
-    <div class="group">{{item.groupTitle  }}</div>
-    <div class="spec">{{  }}</div>
-    <div class="date_start">{{ new Date(item.started).toLocaleDateString('ru-RU') }}</div>
-    <div class="date_end">{{ new Date(item.ended).toLocaleDateString('ru-RU') }}</div>
-    <div class="fio">{{ item.userName }}</div>
-
-  </div>
-    
-  </div>
-
-
-  </div>
-
-
-  </template>
-
-  <script>
-  export default{
-    data() {
-      return {
-        items: [],
-        started: null,
-        ended: null,
-        groupTitle: null,
-        userName: null,
-        page: 0
-      }
-    },
-    mounted() {
-      this.practice();
-     // setInterval(this.practice, 300);
-      setTimeout(() => {
+        <div class="group">{{ item.groupTitle }}</div>
+        <div class="spec">{{ }}</div>
+        <div class="date_start">{{ new Date(item.started).toLocaleDateString('ru-RU') }}</div>
         
-      this.page++;
-    }, 5000);
+        <div class="date_end">{{ new Date(item.ended).toLocaleDateString('ru-RU') }}</div>
+        <div class="fio">{{ item.userName }}</div>
+
+      </div>
+
+    </div>
+
+
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      items: [],
+      started: null,
+      ended: null,
+      groupTitle: null,
+      userName: null,
+      page: 0,
+      len: null
+
+    }
+  },
+  mounted() {
+
+    this.practice();
+    this.dlina(); this.slide();
+
+
+    setInterval(this.slide, 5800);
+
+    //setTimeout(() => {
+
+    //  this.page++;
+    //  this.slide();
+    //}, 5000);
+  },
+  computed: {
+
+    displayFlex: function () {
+
+      let started = 8 * this.page;
+      return this.items.slice(started, started + 8);
     },
-    computed: {
+    pagesCount: function() {
+      let str = Math.floor(this.items.length / 8);
+      if (this.items.length % 8 > 0) {
 
-      displayFlex: function() {
+        str += 1;
+      }
+      return str;
+    },
+  },
+  methods: {
+    practice() {
+      let app = this;
+      fetch('https://api-crm.kioskapi.ru/api/groupPractice/8', {
+        method: 'GET',
+        headers: {
+          "Content-Type": "application/json"
+        },
+      })
+        .then((response) => response.json())
+        .then((response) => {
 
-          let started = 8 * this.page;
-          return this.items.slice(started, started + 8);
+
+          app.items = response;
+
+          app.len = response.length;
+          app.dlina();
+        });
+
+    },
+    dlina() {
+      if (this.len !== null) {
+        console.log(this.len);
       }
     },
-    methods: {
-      async practice(){
-        const response = await fetch('https://api-crm.kioskapi.ru/api/groupPractice/8',{
-          method: 'GET',
-          headers: {
-            "Content-Type":"application/json"
-          },
-      
-        } );
-  let data = await response.json();
-        this.items = data;
-      
+    
 
-        if (this.page === 1) {
-      this.page = 0; 
-    } else {
-      this.page++;}
+    slide() {
+      if (this.page + 1 >= this.pagesCount) {
+        this.page = 0;
+      } else {
+        this.page++;
+      }
 
+    },
+
+  }
+}
+</script>
+
+<style>
+h1{
+  font-size: 60px;
+}
+body{
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 500;
+  display: flex;
+  justify-content: center;
+  width: 1080px;
+  height: 1980px;
+  padding: 0px;
+  margin: 0px;
+  background: rgb(135, 206, 218);
+ 
+
+}
+.main {
   
-    }
-    }
-  }
-  </script>
+ 
+}
 
-  <style>
-  .main{
-    max-width: 1080px;
-    max-height: 1980px;
-  }
-  .card{
-  width: 500px;
-  background-color: pink;
-  border: 2px solid black;
-  }
-  .all{
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    text-align: center;
-    gap: 30px;
-  }
-  body{
-    display: flex;
-    justify-content: center;
-    text-align: center;
-  }
-  </style>
+.card { 
+  gap: 20px;
+  font-size: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 450px;
+  height: 380px;
+  background-color: rgb(245, 245, 220);
+  border: 3px solid black;
+  border-radius: 18px;
+}
+
+.all {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  text-align: center;
+  gap: 40px;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+</style>
