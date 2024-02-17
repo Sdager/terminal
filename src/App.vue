@@ -1,16 +1,17 @@
 <template >
   <div class="main">
     <h1>Расписание <br>
-      Производственной практики {{ page+1 }}/{{ pagesCount }}</h1>
+      Производственной практики {{ page + 1 }}/{{ pagesCount }}</h1>
     <div class="all" style="color: black;">
       <div class="card" v-for="(item, index) in displayFlex" :key="index">
-
+        <div class="time">{{ noSec }}</div>
         <div class="group">{{ item.groupTitle }}</div>
         <div class="spec">{{ }}</div>
         <div class="date_start">{{ new Date(item.started).toLocaleDateString('ru-RU') }}</div>
-        
+
         <div class="date_end">{{ new Date(item.ended).toLocaleDateString('ru-RU') }}</div>
         <div class="fio">{{ item.userName }}</div>
+        <div class="temp">{{ }}</div>
 
       </div>
 
@@ -30,16 +31,18 @@ export default {
       groupTitle: null,
       userName: null,
       page: 0,
-      len: null
+      len: null,
+      temp: null,
+      noSec: null
 
     }
   },
   mounted() {
-
+    this.weather();
     this.practice();
-    this.dlina(); this.slide();
+    //this.dlina(); this.slide();
 
-
+    this.time();
     setInterval(this.slide, 5800);
 
     //setTimeout(() => {
@@ -55,7 +58,7 @@ export default {
       let started = 8 * this.page;
       return this.items.slice(started, started + 8);
     },
-    pagesCount: function() {
+    pagesCount: function () {
       let str = Math.floor(this.items.length / 8);
       if (this.items.length % 8 > 0) {
 
@@ -75,21 +78,46 @@ export default {
       })
         .then((response) => response.json())
         .then((response) => {
-
-
           app.items = response;
-
           app.len = response.length;
-          app.dlina();
+          // app.dlina();
         });
 
     },
-    dlina() {
-      if (this.len !== null) {
-        console.log(this.len);
-      }
+    weather() {
+
+
+
+      fetch('https://api.openweathermap.org/data/2.5/weather?lat=55.75&lon=37.61&appid=31f450c397fb79d1be041ca49ecb1098'
+      
+       
+      )
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          }
+
+        })
+        .then(data => {
+          console.log(data);
+        })
+        
+
     },
-    
+
+
+
+    time() {
+      let hoursMinute = new Date();
+      this.noSec = hoursMinute.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      return this.noSec;
+    },
+    //dlina() {
+    //  if (this.len !== null) {
+    //    console.log(this.len);
+    //  }
+    //},
+
 
     slide() {
       if (this.page + 1 >= this.pagesCount) {
@@ -105,28 +133,30 @@ export default {
 </script>
 
 <style>
-h1{
+* {
+  overflow: hidden;
+}
+
+h1 {
   font-size: 60px;
 }
-body{
+
+body {
   font-family: Arial, Helvetica, sans-serif;
   font-weight: 500;
   display: flex;
   justify-content: center;
-  width: 1080px;
-  height: 1980px;
+  overflow: hidden;
   padding: 0px;
   margin: 0px;
   background: rgb(135, 206, 218);
- 
+
 
 }
-.main {
-  
- 
-}
 
-.card { 
+.main {}
+
+.card {
   gap: 20px;
   font-size: 30px;
   display: flex;
