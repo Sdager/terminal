@@ -2,7 +2,16 @@
   <div class="main">
     <h1>Расписание <br>
       Производственной практики {{ page + 1 }}/{{ pagesCount }}</h1>
+      <div class="temp">{{weatherData ? (weatherData.main.temp - 273.15).toFixed(1) + '°C' : ''}}</div>
+     <div class="wind">Ветер: {{ weatherData ? weatherData.wind.speed + 'м/c' : '' }}</div>
+     <div class="icon">
+  <img v-if="weatherData" :src="weatherIcons[weatherData.weather[0].icon]" alt="Weather Icon">
+</div>
+  <div class="weather-description">Осадки: {{ weatherData ? weatherData.weather[0].description : '' }}</div>
+      <div class="main"></div>
+
     <div class="all" style="color: black;">
+      
       <div class="card" v-for="(item, index) in displayFlex" :key="index">
         <div class="time">{{ noSec }}</div>
         <div class="group">{{ item.groupTitle }}</div>
@@ -11,8 +20,7 @@
 
         <div class="date_end">{{ new Date(item.ended).toLocaleDateString('ru-RU') }}</div>
         <div class="fio">{{ item.userName }}</div>
-        <div class="temp">{{ }}</div>
-
+       
       </div>
 
     </div>
@@ -33,11 +41,31 @@ export default {
       page: 0,
       len: null,
       temp: null,
-      noSec: null
+      noSec: null,
+      weatherIcons: {
+      "01d": "src/img/01d.svg",
+      "01n": "src/img/01n.svg",
+      "02d": "src/img/02d.svg",
+      "02n": "src/img/02n.svg",
+      "03d": "src/img/03d.svg",
+      "03n": "src/img/03n.svg",
+      "04d": ".src/img/04d.svg",
+      "04n": "src/img/04n.svg",
+     "09d":"src/img/09d.svg",
+     "10d":" src/img/10d.svg",
+     "10n": "src/img/10n.svg",
+     "11d": "src/img/11d.svg",
+     "13d": "src/img/13d.svg",
+     "13n": "src/img/13n.svg", 
+     "50d": "src/img/50d.svg",
+     "50n": "src/img/50n.svg"
+
+    }
 
     }
   },
   mounted() {
+    
     this.weather();
     this.practice();
     //this.dlina(); this.slide();
@@ -55,12 +83,12 @@ export default {
 
     displayFlex: function () {
 
-      let started = 8 * this.page;
-      return this.items.slice(started, started + 8);
+      let started = 6 * this.page;
+      return this.items.slice(started, started + 6);
     },
     pagesCount: function () {
-      let str = Math.floor(this.items.length / 8);
-      if (this.items.length % 8 > 0) {
+      let str = Math.floor(this.items.length / 6);
+      if (this.items.length % 6 > 0) {
 
         str += 1;
       }
@@ -84,8 +112,9 @@ export default {
         });
 
     },
-    weather() {
 
+    weather() {
+let app = this;
 
 
       fetch('https://api.openweathermap.org/data/2.5/weather?lat=55.75&lon=37.61&appid=31f450c397fb79d1be041ca49ecb1098'
@@ -99,6 +128,7 @@ export default {
 
         })
         .then(data => {
+          app.weatherData = data;
           console.log(data);
         })
         
