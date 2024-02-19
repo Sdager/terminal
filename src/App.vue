@@ -1,32 +1,46 @@
 <template >
-  <div class="main">
-    <h1>Расписание <br>
-      Производственной практики {{ page + 1 }}/{{ pagesCount }}</h1>
-      <div class="temp">{{weatherData ? (weatherData.main.temp - 273.15).toFixed(1) + '°C' : ''}}</div>
-     <div class="wind">Ветер: {{ weatherData ? weatherData.wind.speed + 'м/c' : '' }}</div>
-     <div class="icon">
-  <img v-if="weatherData" :src="weatherIcons[weatherData.weather[0].icon]" alt="Weather Icon">
-</div>
-  <div class="weather-description">Осадки: {{ weatherData ? weatherData.weather[0].description : '' }}</div>
-      <div class="main"></div>
+  <main>
 
-    <div class="all" style="color: black;">
-      
+    <section class="weather">
+
+      <div class="left">
+        <div class="icon">
+          <img v-if="weatherData" :src="weatherIcons[weatherData.weather[0].icon]" alt="Weather Icon">
+        </div>
+        <div class="temp">{{ weatherData ? (weatherData.main.temp - 273.15).toFixed(1) + '°C' : '' }}</div>
+      </div>
+      <div class="right">
+        <div class="info1">
+          <div class="time">{{ time }}</div>
+        </div>
+        <div class="info2">
+          <div class="wind">Ветер: {{ weatherData ? weatherData.wind.speed + 'м/c' : '' }}</div>
+
+          <div class="weather-description">{{ weatherData ? weatherData.weather[0].description : '' }}</div>
+        </div>
+      </div> <video src="sky.mp4" autoplay muted loop></video>
+    </section>
+
+
+    <section class="practice">
+      <h1>Расписание <br>
+        Производственной практики {{ page + 1 }}/{{ pagesCount }}</h1>
+
       <div class="card" v-for="(item, index) in displayFlex" :key="index">
-        <div class="time">{{ noSec }}</div>
+
         <div class="group">{{ item.groupTitle }}</div>
         <div class="spec">{{ }}</div>
         <div class="date_start">{{ new Date(item.started).toLocaleDateString('ru-RU') }}</div>
 
         <div class="date_end">{{ new Date(item.ended).toLocaleDateString('ru-RU') }}</div>
         <div class="fio">{{ item.userName }}</div>
-       
+
       </div>
 
-    </div>
+    </section>
 
 
-  </div>
+  </main>
 </template>
 
 <script>
@@ -41,36 +55,41 @@ export default {
       page: 0,
       len: null,
       temp: null,
-      noSec: null,
+      time: null,
       weatherIcons: {
-      "01d": "src/img/01d.svg",
-      "01n": "src/img/01n.svg",
-      "02d": "src/img/02d.svg",
-      "02n": "src/img/02n.svg",
-      "03d": "src/img/03d.svg",
-      "03n": "src/img/03n.svg",
-      "04d": ".src/img/04d.svg",
-      "04n": "src/img/04n.svg",
-     "09d":"src/img/09d.svg",
-     "10d":" src/img/10d.svg",
-     "10n": "src/img/10n.svg",
-     "11d": "src/img/11d.svg",
-     "13d": "src/img/13d.svg",
-     "13n": "src/img/13n.svg", 
-     "50d": "src/img/50d.svg",
-     "50n": "src/img/50n.svg"
+        "01d": "https://openweathermap.org/img/wn/01d.png",
+        "01n": "https://openweathermap.org/img/wn/01n.png",
+        "02d": "https://openweathermap.org/img/wn/02d.png",
+        "02n": "https://openweathermap.org/img/wn/02n.png",
+        "03d": "https://openweathermap.org/img/wn/03d.png",
+        "03n": "https://openweathermap.org/img/wn/03т.png",
+        "04d": "https://openweathermap.org/img/wn/04d@2x.png",
+        "04n": "https://openweathermap.org/img/wn/04n.png",
+        "09d": "https://openweathermap.org/img/wn/09d.png",
+        "10d": " https://openweathermap.org/img/wn/10d.png",
+        "10n": "https://openweathermap.org/img/wn/10n.png",
+        "11d": "https://openweathermap.org/img/wn/11d.png",
+        "13d": "https://openweathermap.org/img/wn/13d.png",
+        "13n": "https://openweathermap.org/img/wn/13n.png",
+        "50d": "https://openweathermap.org/img/wn/50d.png",
+        "50n": "https://openweathermap.org/img/wn/50n.png"
 
-    }
+      }
 
     }
   },
   mounted() {
-    
+    let app = this;
+    setInterval(() => {
+      let hoursMinute = new Date().toLocaleTimeString('RU-ru');
+      //this.noSec = hoursMinute.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      app.time = hoursMinute;
+
+    }, 1000);
     this.weather();
     this.practice();
     //this.dlina(); this.slide();
-
-    this.time();
+    setInterval(this.weather, 1800000);
     setInterval(this.slide, 5800);
 
     //setTimeout(() => {
@@ -96,6 +115,11 @@ export default {
     },
   },
   methods: {
+
+    timeRefresh() {
+
+
+    },
     practice() {
       let app = this;
       fetch('https://api-crm.kioskapi.ru/api/groupPractice/8', {
@@ -114,12 +138,12 @@ export default {
     },
 
     weather() {
-let app = this;
+      let app = this;
+
+      let token = '31f450c397fb79d1be041ca49ecb1098';
+      fetch(`https://api.openweathermap.org/data/2.5/weather?lat=55.737953&lon=37.741621&appid=${token}`
 
 
-      fetch('https://api.openweathermap.org/data/2.5/weather?lat=55.75&lon=37.61&appid=31f450c397fb79d1be041ca49ecb1098'
-      
-       
       )
         .then(response => {
           if (response.ok) {
@@ -131,17 +155,10 @@ let app = this;
           app.weatherData = data;
           console.log(data);
         })
-        
+
 
     },
 
-
-
-    time() {
-      let hoursMinute = new Date();
-      this.noSec = hoursMinute.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      return this.noSec;
-    },
     //dlina() {
     //  if (this.len !== null) {
     //    console.log(this.len);
@@ -163,6 +180,93 @@ let app = this;
 </script>
 
 <style>
+
+* {
+
+  user-select: none !important;
+}
+main {
+  font-family: Arial, Helvetica, sans-serif;
+
+}
+
+video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+
+
+}
+
+.left {
+  z-index: 10;
+  width: 400px;
+  border-radius: 30px;
+  background-color: rgba(75, 172, 246, 0.78);
+
+}
+
+.right {
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  padding: 0;
+
+}
+
+.temp {
+  font-size: 65px;
+  font-weight: 600;
+}
+
+.info1 {
+  width: 600px;
+  height: 180px;
+  border-radius: 30px;
+  background-color: rgba(75, 172, 246, 0.78);
+  border-radius: 40px;
+  font-size: 100px;
+
+}
+
+.info2 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 180px;
+  width: 600px;
+  border-radius: 30px;
+  background-color: rgba(75, 172, 246, 0.78);
+  font-weight: 700;
+  font-size: 43px;
+}
+
+img {
+  width: 210px;
+}
+
+.info1 {}
+
+section.weather {
+
+  height: 300px;
+  border-radius: 44px;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  padding: 50px;
+  box-shadow: 0px 0px 8px 0px rgba(34, 60, 80, 0.2);
+
+  overflow: hidden;
+
+  position: relative;
+}
+
 * {
   overflow: hidden;
 }
@@ -174,17 +278,20 @@ h1 {
 body {
   font-family: Arial, Helvetica, sans-serif;
   font-weight: 500;
-  display: flex;
-  justify-content: center;
-  overflow: hidden;
-  padding: 0px;
-  margin: 0px;
-  background: rgb(135, 206, 218);
 
-
+  background: #8bbeee
 }
 
-.main {}
+main {
+
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+  overflow: hidden;
+  padding: 25px;
+  margin: 0px;
+}
 
 .card {
   gap: 20px;
@@ -193,13 +300,14 @@ body {
   flex-direction: column;
   justify-content: center;
   width: 450px;
-  height: 380px;
-  background-color: rgb(245, 245, 220);
+  height: 375px;
+  background-color: rgb(231, 231, 231);
   border: 3px solid black;
-  border-radius: 18px;
+  border-radius: 25px;
+  box-shadow: 5px 5px 5px black;
 }
 
-.all {
+.practice {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -212,5 +320,5 @@ body {
   display: flex;
   justify-content: center;
   text-align: center;
-}
-</style>
+  margin: 0;
+}</style>
