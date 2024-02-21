@@ -77,12 +77,12 @@
     <section class="practice">
       <h1 style="font-size: 40px">
         Расписание <br />
-        Производственной практики {{ page + 1 }}/{{ pagesCount }}
+        Производственной практики 123{{ page + 1 }}/{{ pagesCount }}
       </h1>
 
       <div class="card" v-for="(item, index) in displayFlex" :key="index">
         <div class="group">{{ item.groupTitle }}</div>
-        <div class="spec">{{}}</div>
+       
         <div class="date_start">
           {{ new Date(item.started).toLocaleDateString("ru-RU") }}
         </div>
@@ -168,9 +168,10 @@ export default {
     timeRefresh() {},
     practice() {
       let app = this;
-      fetch("https://api-crm.kioskapi.ru/api/groupPractice/8", {
+      fetch("https://api-crm.kioskapi.ru/integration/practiceDate/8", {
         method: "GET",
         headers: {
+          'Authorization': 'Bearer fdsdsjiofdsjoijnkppoowerjpi324432mkloprew',
           "Content-Type": "application/json",
         },
       })
@@ -355,21 +356,26 @@ body {
   justify-content: center;
   text-align: center;
   margin: 0;
-  background-image: url(assets/phine.png);
+  background-image: url(kaka.png);
+  background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .card {
   gap: 20px;
-  font-size: 30px;
+  font-size: 39px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   width: 430px;
   height: 340px;
-  background-color: rgb(231, 231, 231);
-  border: 3px solid black;
-  border-radius: 25px;
-  box-shadow: 5px 5px 5px black;
+
+ color: white;
+border: white 5px solid;
+  border-radius: 20px;
+background: linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 100%), rgba(167, 185, 255, 0.24);
+backdrop-filter: blur(50px);
+
   /* border-radius: 20px;
 fill: linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 100%), rgba(167, 185, 255, 0.24);
 backdrop-filter: blur(50px); */
