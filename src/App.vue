@@ -110,6 +110,8 @@ export default {
       temp: null,
       time: null,
       dater: null,
+      length: null,
+      weatherData: {},
       weatherIcons: {
         "01d": "https://openweathermap.org/img/wn/01d.png",
         "01n": "https://openweathermap.org/img/wn/01n.png",
@@ -145,11 +147,6 @@ export default {
     setInterval(this.weather, 1800000);
     setInterval(this.slide, 5800);
 
-    //setTimeout(() => {
-
-    //  this.page++;
-    //  this.slide();
-    //}, 5000);
   },
   computed: {
     displayFlex: function () {
@@ -167,21 +164,27 @@ export default {
   methods: {
     timeRefresh() {},
     practice() {
-      let app = this;
-      fetch("https://api-crm.kioskapi.ru/integration/practiceDate/8", {
-        method: "GET",
-        headers: {
-          'Authorization': 'Bearer fdsdsjiofdsjoijnkppoowerjpi324432mkloprew',
-          "Content-Type": "application/json",
-        },
-      })
-        .then((response) => response.json())
-        .then((response) => {
-          app.items = response;
-          app.len = response.length;
-          // app.dlina();
-        });
+  let app = this;
+  fetch("https://api-crm.kioskapi.ru/integration/practiceDate/8", {
+    method: "GET",
+    headers: {
+      'Authorization': 'Bearer fdsdsjiofdsjoijnkppoowerjpi324432mkloprew',
+      "Content-Type": "application/json",
     },
+  })
+    .then((response) => response.json())
+    .then((response) => {
+      if (response) {
+        app.items = response;
+        app.len = response.length;
+      } else {
+        console.error("Ответ от сервера не содержит данных.");
+      }
+    })
+    .catch((error) => {
+      console.error("Ошибка при получении данных:", error);
+    });
+},
 
     weather() {
       let app = this;
@@ -200,13 +203,6 @@ export default {
           console.log(data);
         });
     },
-
-    //dlina() {
-    //  if (this.len !== null) {
-    //    console.log(this.len);
-    //  }
-    //},
-
     slide() {
       if (this.page + 1 >= this.pagesCount) {
         this.page = 0;
@@ -348,7 +344,6 @@ h1 {
   font-size: 60px;
   color: white;
 }
-
 body {
   font-family: Arial, Helvetica, sans-serif;
   font-weight: 500;
@@ -356,11 +351,10 @@ body {
   justify-content: center;
   text-align: center;
   margin: 0;
-  background-image: url(kaka.png);
+  background-image: url(back.png);
   background-repeat: no-repeat;
     background-size: cover;
 }
-
 .card {
   gap: 20px;
   font-size: 39px;
@@ -376,9 +370,6 @@ border: white 5px solid;
 background: linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 100%), rgba(167, 185, 255, 0.24);
 backdrop-filter: blur(50px);
 
-  /* border-radius: 20px;
-fill: linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 100%), rgba(167, 185, 255, 0.24);
-backdrop-filter: blur(50px); */
 }
 
 .practice {
