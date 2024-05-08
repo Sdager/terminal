@@ -77,7 +77,7 @@
     <section class="practice">
       <h1 style="font-size: 40px">
         Расписание <br />
-        Производственной практики 123{{ page + 1 }}/{{ pagesCount }}
+        Производственной практики {{ page + 1 }}/{{ pagesCount }}
       </h1>
 
       <div class="card" v-for="(item, index) in displayFlex" :key="index">
@@ -367,7 +367,7 @@ body {
  color: white;
 border: white 5px solid;
   border-radius: 20px;
-background: linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 100%), rgba(167, 185, 255, 0.24);
+background: linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 20%), rgba(167, 185, 255, 0.1);
 backdrop-filter: blur(50px);
 
 }
